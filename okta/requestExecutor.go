@@ -341,7 +341,15 @@ func (re *RequestExecutor) doWithRetries(ctx context.Context, req *http.Request)
 		if bodyReader != nil {
 			req.Body = bodyReader()
 		}
+		
+     		dbg, _ := httputil.DumpRequest(req, true)
+     		fmt.Printf("x> dbg request: %s\n", string(dbg))
+		
 		resp, err = re.httpClient.Do(req.WithContext(ctx))
+		
+     		dbg, _ = httputil.DumpResponse(resp, true)
+     		fmt.Printf("x> dbg response: %s\n", string(dbg))
+		
 		if errors.Is(err, io.EOF) {
 			// retry on EOF errors, which might be caused by network connectivity issues
 			return fmt.Errorf("network error: %w", err)
